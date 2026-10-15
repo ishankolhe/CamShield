@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CamShield</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <div class="popup">
+      <div class="header">
+        <h1>CamShield</h1>
+        <span id="status-badge" class="badge badge-live">Live</span>
+      </div>
+
+      <div class="controls">
+        <label class="toggle">
+          <input type="checkbox" id="toggle-enabled" checked />
+          <span>Protection Enabled</span>
+        </label>
+
+        <label class="toggle">
+          <input type="checkbox" id="toggle-audio" />
+          <span>Mute Audio Too</span>
+        </label>
+      </div>
+
+      <div class="hotkey-hint">
+        <kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>M</kbd> to toggle mute
+      </div>
+
+      <div class="footer">
+        <a id="open-options">Settings</a>
+      </div>
+    </div>
+    <script type="module" src="popup.ts"></script>
+  </body>
+</html>

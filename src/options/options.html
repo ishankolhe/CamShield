@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CamShield — Settings & Calibration</title>
+    <link rel="stylesheet" href="options.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1>CamShield Settings</h1>
+
+      <section>
+        <h2>Triggers</h2>
+        <div class="trigger-grid" id="trigger-grid"></div>
+      </section>
+
+      <section>
+        <h2>Sensitivity</h2>
+        <label>
+          Detection FPS
+          <input type="range" id="detection-fps" min="5" max="30" step="1" />
+          <span id="fps-value">15</span>
+        </label>
+        <label>
+          Hysteresis Frames
+          <input type="range" id="hysteresis" min="1" max="6" step="1" />
+          <span id="hysteresis-value">3</span>
+        </label>
+        <label>
+          Unmute Cooldown (ms)
+          <input type="range" id="cooldown" min="200" max="2000" step="100" />
+          <span id="cooldown-value">500</span>
+        </label>
+      </section>
+
+      <section>
+        <h2>Muted Card</h2>
+        <label>
+          Card Text
+          <input type="text" id="card-text" value="Camera Temporarily Muted" />
+        </label>
+      </section>
+
+      <section>
+        <h2>Calibration</h2>
+        <p>Position yourself normally at your desk, then click calibrate.</p>
+        <div class="calibration-area">
+          <video id="calibration-video" autoplay muted playsinline></video>
+          <button id="btn-calibrate">Calibrate Neutral Pose</button>
+          <div id="calibration-status"></div>
+        </div>
+      </section>
+
+      <button id="btn-save" class="btn-primary">Save Settings</button>
+    </div>
+    <script type="module" src="options.ts"></script>
+  </body>
+</html>

@@ -1,0 +1,69 @@
+{
+  "manifest_version": 3,
+  "name": "CamShield",
+  "version": "0.1.0",
+  "description": "Auto-mutes your webcam when you turn away, sneeze, cough or eat. Everything runs locally.",
+  "permissions": ["storage"],
+  "host_permissions": [
+    "https://meet.google.com/*",
+    "https://teams.microsoft.com/*",
+    "https://*.zoom.us/*"
+  ],
+  "background": {
+    "service_worker": "src/background/service-worker.ts",
+    "type": "module"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://meet.google.com/*",
+        "https://teams.microsoft.com/*",
+        "https://*.zoom.us/*"
+      ],
+      "js": ["src/content/isolated.ts"],
+      "run_at": "document_start"
+    },
+    {
+      "matches": [
+        "https://meet.google.com/*",
+        "https://teams.microsoft.com/*",
+        "https://*.zoom.us/*"
+      ],
+      "js": ["src/content/main-world.ts"],
+      "world": "MAIN",
+      "run_at": "document_start"
+    }
+  ],
+  "action": {
+    "default_popup": "src/popup/popup.html",
+    "default_icon": {
+      "16": "public/icons/icon16.png",
+      "48": "public/icons/icon48.png",
+      "128": "public/icons/icon128.png"
+    }
+  },
+  "options_page": "src/options/options.html",
+  "icons": {
+    "16": "public/icons/icon16.png",
+    "48": "public/icons/icon48.png",
+    "128": "public/icons/icon128.png"
+  },
+  "commands": {
+    "toggle-mute": {
+      "suggested_key": {
+        "default": "Alt+Shift+M"
+      },
+      "description": "Toggle mute on/off"
+    }
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["src/worker/*"],
+      "matches": [
+        "https://meet.google.com/*",
+        "https://teams.microsoft.com/*",
+        "https://*.zoom.us/*"
+      ]
+    }
+  ]
+}
