@@ -88,6 +88,7 @@ input[type="text"] {
   border-radius: 6px;
   background: #000;
   margin-bottom: 12px;
+  transform: scaleX(-1);
 }
 
 button {

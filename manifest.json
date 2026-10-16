@@ -58,7 +58,7 @@
   },
   "web_accessible_resources": [
     {
-      "resources": ["src/worker/*"],
+      "resources": ["mediapipe/*", "models/*"],
       "matches": [
         "https://meet.google.com/*",
         "https://teams.microsoft.com/*",

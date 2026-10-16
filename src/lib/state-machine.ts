@@ -3,8 +3,9 @@ import type {
   TriggerEvent,
   DetectionResult,
   CamShieldSettings,
-  DEFAULT_SETTINGS,
+  CalibrationProfile,
 } from "./types";
+import { DEFAULT_SETTINGS } from "./types";
 
 export type StateTransition = {
   from: MuteState;
@@ -24,13 +25,56 @@ export class StateMachine {
 
   private hysteresisFrames: number;
   private unmuteCooldownMs: number;
+  private yawThreshold: number;
+  private pitchThreshold: number;
+  private neutralYaw: number;
+  private neutralPitch: number;
 
   constructor(
     hysteresisFrames = 3,
     unmuteCooldownMs = 500,
+    yawThreshold = 35,
+    pitchThreshold = 30,
+    neutralYaw = 0,
+    neutralPitch = 0,
   ) {
     this.hysteresisFrames = hysteresisFrames;
     this.unmuteCooldownMs = unmuteCooldownMs;
+    this.yawThreshold = yawThreshold;
+    this.pitchThreshold = pitchThreshold;
+    this.neutralYaw = neutralYaw;
+    this.neutralPitch = neutralPitch;
+  }
+
+  static async createFromStorage(): Promise<StateMachine> {
+    const { calibration_profile } = await chrome.storage.local.get("calibration_profile");
+    let yawThreshold = 35;
+    let pitchThreshold = 30;
+    let neutralYaw = 0;
+    let neutralPitch = 0;
+
+    if (calibration_profile) {
+      yawThreshold = calibration_profile.yawThreshold ?? 35;
+      pitchThreshold = calibration_profile.pitchThreshold ?? 30;
+      neutralYaw = calibration_profile.neutralYaw ?? 0;
+      neutralPitch = calibration_profile.neutralPitch ?? 0;
+    }
+
+    return new StateMachine(
+      DEFAULT_SETTINGS.hysteresisFrames,
+      DEFAULT_SETTINGS.unmuteCooldownMs,
+      yawThreshold,
+      pitchThreshold,
+      neutralYaw,
+      neutralPitch,
+    );
+  }
+
+  updateCalibration(profile: CalibrationProfile): void {
+    this.yawThreshold = profile.yawThreshold ?? 35;
+    this.pitchThreshold = profile.pitchThreshold ?? 30;
+    this.neutralYaw = profile.neutralYaw ?? 0;
+    this.neutralPitch = profile.neutralPitch ?? 0;
   }
 
   getState(): MuteState {
@@ -98,12 +142,12 @@ export class StateMachine {
     }
 
     if (enabled.head_turn) {
-      const yawAbs = Math.abs(result.yaw);
-      const pitchAbs = Math.abs(result.pitch);
-      if (yawAbs > 35 || pitchAbs > 30) {
+      const yawAbs = Math.abs(result.yaw - this.neutralYaw);
+      const pitchAbs = Math.abs(result.pitch - this.neutralPitch);
+      if (yawAbs > this.yawThreshold || pitchAbs > this.pitchThreshold) {
         return {
           type: "head_turn",
-          confidence: Math.min(1, Math.max(yawAbs, pitchAbs) / 45),
+          confidence: Math.min(1, Math.max(yawAbs / this.yawThreshold, pitchAbs / this.pitchThreshold)),
           timestamp: now,
         };
       }

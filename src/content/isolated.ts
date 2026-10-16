@@ -1,10 +1,11 @@
 import type { CamShieldSettings } from "../lib/types";
 
 let currentSettings: CamShieldSettings | null = null;
+const extensionOrigin = chrome.runtime.getURL("");
 
 chrome.runtime.sendMessage({ type: "GET_SETTINGS" }, (settings) => {
   currentSettings = settings;
-  window.postMessage({ type: "CAMSHIELD_SETTINGS", settings }, "*");
+  window.postMessage({ type: "CAMSHIELD_SETTINGS", settings, extensionOrigin }, "*");
 });
 
 chrome.runtime.onMessage.addListener((message) => {
@@ -17,7 +18,7 @@ chrome.storage.onChanged.addListener((changes) => {
   if (changes.settings) {
     currentSettings = changes.settings.newValue;
     window.postMessage(
-      { type: "CAMSHIELD_SETTINGS", settings: currentSettings },
+      { type: "CAMSHIELD_SETTINGS", settings: currentSettings, extensionOrigin },
       "*",
     );
   }

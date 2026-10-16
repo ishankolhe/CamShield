@@ -21,10 +21,9 @@ npm run test:watch  # Run tests in watch mode
 
 - `src/background/` — Service worker (settings, hotkey, badge)
 - `src/content/isolated.ts` — Relays settings between extension APIs and main world
-- `src/content/main-world.ts` — Patches `getUserMedia`, composites processed stream
-- `src/worker/` — MediaPipe detection worker (face + hand landmarks)
+- `src/content/main-world.ts` — Patches `getUserMedia`, runs detection loop, composites processed stream
+- `src/lib/detector.ts` — MediaPipe FaceLandmarker + HandLandmarker wrapper (main thread, needs DOM/WebGL)
 - `src/lib/state-machine.ts` — Mute state machine with hysteresis
-- `src/lib/compositor.ts` — Frame buffer + muted card rendering
 - `src/lib/types.ts` — Shared types and defaults
 - `src/popup/` — Toolbar popup (status + quick toggles)
 - `src/options/` — Settings page with calibration
